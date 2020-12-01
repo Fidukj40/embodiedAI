@@ -66,7 +66,7 @@ class DeepVOCNN(nn.Module):
             self.cnn =nn.Sequential(
             nn.AvgPool2d(5,1,5//2),
             #conv in based on # of input channels
-            nn.Conv2d(1, 32, kernel_size=7, stride=2, padding=(7-1)//2, bias=True),
+            nn.Conv2d(4, 32, kernel_size=7, stride=2, padding=(7-1)//2, bias=True),
             nn.ReLU(True),
             nn.Dropout(.1),
             nn.Conv2d(32, 32, kernel_size=5, stride=2, padding=(5-1)//2, bias=True),
