@@ -11,15 +11,22 @@ from gym.spaces.dict_space import Dict as SpaceDict
 from torch import nn as nn
 
 from habitat.config import Config
-#from habitat.tasks.nav.nav import (
-#    PointGoalSensor
-#)
 from habitat_baselines.common.baseline_registry import baseline_registry
 from habitat_baselines.rl.models.rnn_state_encoder import RNNStateEncoder
 from deepVO_cnn import DeepVOCNN
-from habitat_baselines.common.utils import CategoricalNet
+from habitat_baselines.common.utils import CustomFixedCategorical
 
-
+class CategoricalNet(nn.Module):
+    def __init__(self, num_inputs, num_outputs):
+        super().__init__()
+        self.linear = nn.Linear(num_inputs, 128)
+        self.linear2 = nn.Linear(128,num_outputs)
+        nn.init.orthogonal_(self.linear.weight, gain=0.01)
+        nn.init.constant_(self.linear.bias, 0)
+    def forward(self, x):
+        x = self.linear(x)
+        x= self.linear2(x)
+        return CustomFixedCategorical(logits=x)
 class Policy(nn.Module, metaclass=abc.ABCMeta):
     def __init__(self, net, dim_actions):
         super().__init__()
@@ -52,7 +59,7 @@ class Policy(nn.Module, metaclass=abc.ABCMeta):
             action = distribution.mode()
         else:
             action = distribution.sample()
-
+        print(action)
         action_log_probs = distribution.log_probs(action)
 
         return value, action, action_log_probs, rnn_hidden_states
@@ -86,12 +93,14 @@ class Policy(nn.Module, metaclass=abc.ABCMeta):
 class CriticHead(nn.Module):
     def __init__(self, input_size):
         super().__init__()
-        self.fc = nn.Linear(input_size, 1)
+        self.fc = nn.Linear(input_size, 256)
+        self.fc2 = nn.Linear(256,1)
         nn.init.orthogonal_(self.fc.weight)
         nn.init.constant_(self.fc.bias, 0)
 
     def forward(self, x):
-        return self.fc(x)
+        x = nn.functional.relu(self.fc(x))
+        return self.fc2(x)
 
 
 class PointNavBaselinePolicy(Policy):
@@ -155,17 +164,14 @@ class PointNavBaselineNet(Net):
     ):
         super().__init__()
 
-        #if PointGoalSensor.cls_uuid in observation_space.spaces:
-        #    self._n_input_goal = observation_space.spaces[
-        #        PointGoalSensor.cls_uuid
-        #    ].shape[0]
-
+        if "pointgoal" in observation_space.spaces:
+            self._n_input_goal = observation_space.spaces["pointgoal"].shape[0]
         self._hidden_size = hidden_size
 
         self.visual_encoder = DeepVOCNN(observation_space, hidden_size)
 
         self.state_encoder = RNNStateEncoder(
-            (0 if self.is_blind else self._hidden_size) ,
+            (0 if self.is_blind else self._hidden_size) + self._n_input_goal,
             self._hidden_size,
         )
 
@@ -185,10 +191,10 @@ class PointNavBaselineNet(Net):
 
     def forward(self, observations, rnn_hidden_states, prev_actions, masks):
 
-        #if PointGoalSensor.cls_uuid in observations:
-        #    target_encoding = observations[PointGoalSensor.cls_uuid]
-
-        x = []
+        if "pointgoal" in observations:
+            target_encoding = observations["pointgoal"]
+        
+        x = [target_encoding]
         if not self.is_blind:
             perception_embed = self.visual_encoder(observations)
             x = [perception_embed] + x

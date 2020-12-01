@@ -64,20 +64,22 @@ class DeepVOCNN(nn.Module):
                 )
 ##########################Start DeepVO Definition###############################
             self.cnn =nn.Sequential(
-            nn.Conv2d(4, 32, kernel_size=7, stride=2, padding=(7-1)//2, bias=True),
-            nn.LeakyReLU(0.1, inplace=True),
+            nn.AvgPool2d(5,1,5//2),
+            #conv in based on # of input channels
+            nn.Conv2d(1, 32, kernel_size=7, stride=2, padding=(7-1)//2, bias=True),
+            nn.ReLU(True),
             nn.Dropout(.1),
             nn.Conv2d(32, 32, kernel_size=5, stride=2, padding=(5-1)//2, bias=True),
-            nn.LeakyReLU(0.1, inplace=True),
+            nn.ReLU(True),
             nn.Dropout(.1),
             nn.Conv2d(32, 64, kernel_size=5, stride=2, padding=(5-1)//2, bias=True),
-            nn.LeakyReLU(0.1, inplace=True),
+            nn.ReLU(True),
             nn.Dropout(.1),
             nn.Conv2d(64, 64, kernel_size=4, stride=2, padding=(4-1)//2, bias=True),
-            nn.LeakyReLU(0.1, inplace=True),
+            nn.ReLU(True),
             nn.Dropout(.1),
             nn.Conv2d(64, 128, kernel_size=3, stride=2, padding=(3-1)//2, bias=True),
-            nn.LeakyReLU(0.1, inplace=True),
+            nn.ReLU(True),
             nn.Dropout(.1),
             )
             self.rnn = nn.LSTM(input_size=220,hidden_size=512,num_layers=2,batch_first=True)

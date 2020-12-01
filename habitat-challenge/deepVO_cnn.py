@@ -65,6 +65,7 @@ class DeepVOCNN(nn.Module):
                 )
 ##########################Start DeepVO Definition###############################
             self.cnn =nn.Sequential(
+            nn.AvgPool2d(5,1,5//2),
             nn.Conv2d(4, 32, kernel_size=7, stride=2, padding=(7-1)//2, bias=True),
             nn.LeakyReLU(0.1, inplace=True),
             nn.Dropout(.1),
