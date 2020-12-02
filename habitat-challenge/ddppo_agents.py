@@ -21,7 +21,7 @@ from habitat import Config
 from habitat.core.agent import Agent
 from habitat_baselines.common.utils import batch_obs
 from habitat_baselines.config.default import get_config
-from habitat_baselines.rl.ppo import PointNavBaselinePolicy, Policy
+from policy import PointNavBaselinePolicy, Policy
 
 from habitat_baselines.rl.ddppo.policy.resnet_policy import (  # isort:skip noqa
     PointNavResNetPolicy,
@@ -99,19 +99,19 @@ class DDPPOAgent(Agent):
             observation_space=observation_spaces,
             action_space=action_space,
             hidden_size=self.hidden_size,
-            rnn_type=config.RL.DDPPO.rnn_type,
-            num_recurrent_layers=config.RL.DDPPO.num_recurrent_layers,
-            backbone=config.RL.DDPPO.backbone,
-            normalize_visual_inputs="rgb"
-            if config.INPUT_TYPE in ["rgb", "rgbd"]
-            else False,
+        #    rnn_type=config.RL.DDPPO.rnn_type,
+        #    num_recurrent_layers=config.RL.DDPPO.num_recurrent_layers,
+        #    backbone=config.RL.DDPPO.backbone,
+        #    normalize_visual_inputs="rgb"
+        #    if config.INPUT_TYPE in ["rgb", "rgbd"]
+        #    else False,
         )
-        if "ObjectNav" not in config.TASK_CONFIG.TASK.TYPE:
-            policy_arguments[
-                "goal_sensor_uuid"
-            ] = config.TASK_CONFIG.TASK.GOAL_SENSOR_UUID
+        #if "ObjectNav" not in config.TASK_CONFIG.TASK.TYPE:
+        #    policy_arguments[
+        #        "goal_sensor_uuid"
+        #    ] = config.TASK_CONFIG.TASK.GOAL_SENSOR_UUID
 
-        self.actor_critic = PointNavResNetPolicy(**policy_arguments)
+        self.actor_critic = PointNavBaselinePolicy(**policy_arguments)
         self.actor_critic.to(self.device)
 
         if config.MODEL_PATH:
