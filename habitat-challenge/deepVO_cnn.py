@@ -68,22 +68,22 @@ class DeepVOCNN(nn.Module):
             nn.AvgPool2d(5,1,5//2),
             nn.Conv2d(4, 32, kernel_size=7, stride=2, padding=(7-1)//2, bias=True),
             nn.LeakyReLU(0.1, inplace=True),
-            nn.Dropout(.1),
+            nn.Dropout(.2),
             nn.Conv2d(32, 32, kernel_size=5, stride=2, padding=(5-1)//2, bias=True),
             nn.LeakyReLU(0.1, inplace=True),
-            nn.Dropout(.1),
+            nn.Dropout(.2),
             nn.Conv2d(32, 64, kernel_size=5, stride=2, padding=(5-1)//2, bias=True),
             nn.LeakyReLU(0.1, inplace=True),
-            nn.Dropout(.1),
+            nn.Dropout(.2),
             nn.Conv2d(64, 64, kernel_size=4, stride=2, padding=(4-1)//2, bias=True),
             nn.LeakyReLU(0.1, inplace=True),
-            nn.Dropout(.1),
+            nn.Dropout(.2),
             nn.Conv2d(64, 128, kernel_size=3, stride=2, padding=(3-1)//2, bias=True),
             nn.LeakyReLU(0.1, inplace=True),
-            nn.Dropout(.1),
+            nn.Dropout(.2),
             )
             self.rnn = nn.LSTM(input_size=220,hidden_size=512,num_layers=2,batch_first=True)
-            self.rnn_drop_out = nn.Dropout(0.2)
+            self.rnn_drop_out = nn.Dropout(0.5)
             self.flatten = Flatten()
             self.linear = nn.Linear(65536, 512)
 ######################## End Deep VO Definition ###############################
