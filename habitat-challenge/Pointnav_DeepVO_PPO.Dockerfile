@@ -13,7 +13,7 @@ ADD configs/challenge_pointnav2020.local.rgbd.yaml /challenge_pointnav2020.local
 ADD configs/challenge_pointnav2020.local.rgbd_test_scene.yaml /challenge_pointnav2020.local.rgbd_test_scene.yaml
 ADD configs/ configs/
 #ADD ddppo_pointnav_habitat2020_challenge_baseline_v1.pth demo.ckpt.pth
-ADD ckpt.180.pth demo.ckpt.pth
+ADD ckpt.199.pth demo.ckpt.pth
 ENV AGENT_EVALUATION_TYPE remote
 
 ENV TRACK_CONFIG_FILE "/challenge_pointnav2020.local.rgbd.yaml"
