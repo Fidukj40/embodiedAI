@@ -5,7 +5,7 @@ CS-7643 Habitat AI group project
 Two folders were created as there are some very slight differences in the code (ex: the import for the baseline utils). It would be nice to refactor it to 1 set of files, but only if we have time.
 
 Prereqs:
-Setup habitat-challenge, habitat-lab, and habitat_baselines following the instructions on their GitHub pages.
+Setup habitat-challenge, habitat-lab, and habitat_baselines following the instructions on their GitHub pages. **Running Habitat requires a Linux OS because of Nvidia Docker dependency**
 
  - Habitat Challenge: https://github.com/facebookresearch/habitat-challenge/blob/master/README.md
  - Habitat Lab: https://github.com/facebookresearch/habitat-lab/blob/master/README.md
