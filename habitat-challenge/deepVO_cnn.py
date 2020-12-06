@@ -127,6 +127,7 @@ class DeepVOCNN(nn.Module):
                 )
                 if layer.bias is not None:
                     nn.init.constant_(layer.bias, val=0)
+            #Weight loading for LSTM provided by https://github.com/ChiWeiHsiao/DeepVO-pytorch/blob/master/model.py
             elif isinstance(layer, nn.LSTM):
                 # layer 1
                 kaiming_normal_(layer.weight_ih_l0)  #orthogonal_(m.weight_ih_l0)
